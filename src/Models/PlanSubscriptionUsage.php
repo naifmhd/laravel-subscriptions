@@ -96,8 +96,8 @@ class PlanSubscriptionUsage extends Model
 
         $this->setTable(config('rinvex.subscriptions.tables.plan_subscription_usage'));
         $this->setRules([
-            'subscription_id' => 'required|integer|exists:'.config('rinvex.subscriptions.tables.plan_subscriptions').',id',
-            'feature_id' => 'required|integer|exists:'.config('rinvex.subscriptions.tables.plan_features').',id',
+            'subscription_id' => 'required|integer|exists:' . config('rinvex.subscriptions.tables.plan_subscriptions') . ',id',
+            'feature_id' => 'required|integer|exists:' . config('rinvex.subscriptions.tables.plan_features') . ',id',
             'used' => 'required|integer',
             'valid_until' => 'nullable|date',
         ]);
@@ -131,9 +131,12 @@ class PlanSubscriptionUsage extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeByFeatureSlug(Builder $builder, string $featureSlug): Builder
+    public function scopeByFeatureSlug(Builder $builder, PlanSubscription $planSubscription, string $featureSlug): Builder
     {
-        $feature = app('rinvex.subscriptions.plan_feature')->where('slug', $featureSlug)->first();
+        $feature = app('rinvex.subscriptions.plan_feature')->where([
+            'plan_id' => $planSubscription->plan_id,
+            'slug' => $featureSlug
+        ])->first();
 
         return $builder->where('feature_id', $feature->getKey() ?? null);
     }
