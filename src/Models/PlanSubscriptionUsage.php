@@ -131,9 +131,12 @@ class PlanSubscriptionUsage extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeByFeatureSlug(Builder $builder, string $featureSlug): Builder
+    public function scopeByFeatureSlug(Builder $builder, PlanSubscription $planSubscription, string $featureSlug): Builder
     {
-        $feature = app('rinvex.subscriptions.plan_feature')->where('slug', $featureSlug)->first();
+        $feature = app('rinvex.subscriptions.plan_feature')->where([
+            'plan_id' => $planSubscription->plan_id,
+            'slug' => $featureSlug
+        ])->first();
 
         return $builder->where('feature_id', $feature ? $feature->getKey() : null);
     }
