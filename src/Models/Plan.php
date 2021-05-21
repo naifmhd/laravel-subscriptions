@@ -173,8 +173,7 @@ class Plan extends Model implements Sortable
     {
         $this->setTable(config('rinvex.subscriptions.tables.plans'));
         $this->setRules([
-            // 'slug' => 'required|alpha_dash|max:150|unique:' . config('rinvex.subscriptions.tables.plans') . ',slug',
-            'slug' => 'required|alpha_dash|max:150',
+            'slug' => 'required|alpha_dash|max:150|unique:' . config('rinvex.subscriptions.tables.plans') . ',slug',
             'name' => 'required|string|strip_tags|max:150',
             'description' => 'nullable|string|max:32768',
             'is_active' => 'sometimes|boolean',
