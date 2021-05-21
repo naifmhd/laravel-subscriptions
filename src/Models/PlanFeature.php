@@ -53,7 +53,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class PlanFeature extends Model implements Sortable
 {
-    // use HasSlug;
+    use HasSlug;
     use SoftDeletes;
     use BelongsToPlan;
     use SortableTrait;
@@ -161,6 +161,7 @@ class PlanFeature extends Model implements Sortable
     {
         return SlugOptions::create()
             ->doNotGenerateSlugsOnUpdate()
+            ->doNotGenerateSlugsOnCreate()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
