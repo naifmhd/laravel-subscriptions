@@ -504,15 +504,16 @@ class PlanSubscription extends Model
     public function canUseFeature(string $featureSlug): bool
     {
         $featureValue = $this->getFeatureValue($featureSlug);
-        $usage = $this->usage()->byFeatureSlug($this, $featureSlug)->first();
+        // $usage = $this->usage()->byFeatureSlug($this, $featureSlug)->first();
 
-        if ($featureValue === 'true') {
+        if ($featureValue === 'true' || $featureValue === 'Y') {
             return true;
         }
 
+        //!$usage || $usage->expired() ||
         // If the feature value is zero, let's return false since
         // there's no uses available. (useful to disable countable features)
-        if (!$usage || $usage->expired() || is_null($featureValue) || $featureValue === '0' || $featureValue === 'false') {
+        if (is_null($featureValue) || $featureValue === '0' || $featureValue === 'false') {
             return false;
         }
 
