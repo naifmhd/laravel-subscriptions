@@ -216,7 +216,7 @@ class Plan extends Model implements Sortable
      */
     public function features(): HasMany
     {
-        return $this->hasMany(config('rinvex.subscriptions.models.plan_feature'), 'plan_id', 'id');
+        return $this->hasMany(config('rinvex.subscriptions.models.plan_feature'), 'plan_id', 'id')->orderBy('sort_order');;
     }
 
     /**
