@@ -7,6 +7,7 @@ namespace Rinvex\Subscriptions\Models;
 use DB;
 use Carbon\Carbon;
 use LogicException;
+use Illuminate\Validation\Rule;
 use Spatie\Sluggable\SlugOptions;
 use Rinvex\Support\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
@@ -149,7 +150,9 @@ class PlanSubscription extends Model
         $this->mergeRules([
             'name' => 'required|string|strip_tags|max:150',
             'description' => 'nullable|string|max:32768',
-            'slug' => 'required|alpha_dash|max:150|unique:' . config('rinvex.subscriptions.tables.plan_subscriptions') . ',slug',
+            'slug' => ['required', 'alpha_dash', 'max:150', Rule::unique(config('rinvex.subscriptions.tables.plan_subscriptions'))->where(function ($query) {
+                return $query->where('id', '!=', $this->id)->where('user_type', $this->user_type)->where('user_id', $this->user_id);
+            })],
             'plan_id' => 'required|integer|exists:' . config('rinvex.subscriptions.tables.plans') . ',id',
             'subscriber_id' => 'required|integer',
             'subscriber_type' => 'required|string|strip_tags|max:150',
