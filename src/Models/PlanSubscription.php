@@ -153,7 +153,7 @@ class PlanSubscription extends Model
             'name' => 'required|string|strip_tags|max:150',
             'description' => 'nullable|string|max:32768',
             'slug' => ['required', 'alpha_dash', 'max:150', Rule::unique(config('rinvex.subscriptions.tables.plan_subscriptions'))->where(function ($query) {
-                return $query->where('id', '!=', $this->id)->where('user_type', $this->user_type)->where('user_id', $this->user_id);
+                return $query->where('id', '!=', $this->id)->where('subscriber_type', $this->subscriber_type)->where('subscriber_id', $this->subscriber_id);
             })],
             'plan_id' => 'required|integer|exists:' . config('rinvex.subscriptions.tables.plans') . ',id',
             'subscriber_id' => 'required|integer',
