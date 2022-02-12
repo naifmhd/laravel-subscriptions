@@ -146,10 +146,8 @@ class PlanSubscription extends Model
      */
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
         $this->setTable(config('rinvex.subscriptions.tables.plan_subscriptions'));
-        $this->setRules([
+        $this->mergeRules([
             'name' => 'required|string|strip_tags|max:150',
             'description' => 'nullable|string|max:32768',
             'slug' => ['required', 'alpha_dash', 'max:150', Rule::unique(config('rinvex.subscriptions.tables.plan_subscriptions'))->where(function ($query) {
@@ -164,6 +162,8 @@ class PlanSubscription extends Model
             'cancels_at' => 'nullable|date',
             'canceled_at' => 'nullable|date',
         ]);
+
+        parent::__construct($attributes);
     }
 
     /**
@@ -177,6 +177,10 @@ class PlanSubscription extends Model
             if (!$model->starts_at || !$model->ends_at) {
                 $model->setNewPeriod();
             }
+        });
+
+        static::deleted(function ($subscription) {
+            $subscription->usage()->delete();
         });
     }
 

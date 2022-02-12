@@ -171,8 +171,6 @@ class Plan extends Model implements Sortable
      */
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
         $this->setTable(config('rinvex.subscriptions.tables.plans'));
         $this->setRules([
             'slug' => 'required|alpha_dash|max:150|unique:' . config('rinvex.subscriptions.tables.plans') . ',slug',
@@ -194,6 +192,21 @@ class Plan extends Model implements Sortable
             'prorate_extend_due' => 'nullable|integer|max:150',
             'active_subscribers_limit' => 'nullable|integer|max:100000',
         ]);
+
+        parent::__construct($attributes);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($plan) {
+            $plan->features()->delete();
+            $plan->planSubscriptions()->delete();
+        });
     }
 
     /**
